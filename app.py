@@ -27,7 +27,6 @@ ith st.sidebar:
     """)
     st.divider()
 
-    st.markdown("---")
     st.markdown("## 🛠 Tool Instructions")
     st.markdown("""
     1. Upload glossary file (TMX, TBX, Excel, SDLTM, CSV)
