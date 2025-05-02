@@ -1,7 +1,12 @@
 # File: app.py
 
-import streamlit as st
+import sys
 import os
+
+# Ensure proper module resolution for Streamlit
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
+import streamlit as st
 import tempfile
 import pandas as pd
 
@@ -9,8 +14,7 @@ from parsers import (
     tmx_parser,
     tbx_parser,
     sdltm_parser,
-    sdltb_parser,
-    excel_handler
+    sdltb_parser
 )
 
 from utils import (
@@ -19,15 +23,16 @@ from utils import (
     excel_to_tmx
 )
 
-# Configure the Streamlit page
+from pyglossary import excel_handler
+
+
+# Configure Streamlit page
 st.set_page_config(page_title="Glossary Format Converter", layout="centered")
 
 st.title("🧰 Glossary Format Converter")
 
-# Upload section
 uploaded_file = st.file_uploader("Upload a file", type=["tmx", "tbx", "xlsx", "sdltb", "sdltm"])
 
-# Conversion options
 conversion_option = st.selectbox("Select conversion type", [
     "TMX → Excel",
     "TBX → Excel",
@@ -38,14 +43,12 @@ conversion_option = st.selectbox("Select conversion type", [
     "Excel → TMX"
 ])
 
-# Convert on button click
 if uploaded_file and st.button("Convert"):
     with tempfile.NamedTemporaryFile(delete=False) as temp_input:
         temp_input.write(uploaded_file.read())
         input_path = temp_input.name
 
     try:
-        # Decide which conversion to execute
         if conversion_option == "TMX → Excel":
             df = tmx_parser.parse_tmx_to_dataframe(input_path)
             ext = ".xlsx"
@@ -85,7 +88,6 @@ if uploaded_file and st.button("Convert"):
             st.error("Unsupported conversion type.")
             st.stop()
 
-        # Export and offer download
         with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as temp_output:
             export_func(df, temp_output.name)
             st.success("Conversion successful!")
