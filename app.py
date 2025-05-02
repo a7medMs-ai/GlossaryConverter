@@ -35,7 +35,7 @@ with st.sidebar:
     """)
 
 # ------------- MAIN PAGE ------------------
-st.markdown("<h1 style='text-align: center;'>🧰 Glossary Format Converter</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'> Glossary Format Converter</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; font-size:16px;'>Translation Engineering Tool – 2025 • v1.0.0</p>", unsafe_allow_html=True)
 st.markdown("---")
 
