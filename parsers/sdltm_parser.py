@@ -8,7 +8,7 @@ def extract_sdltm_data(sdltm_path):
     cursor.execute("""
         SELECT tu.ID, tuv.LanguageCode, tuv.PlainTextSegment
         FROM TranslationUnits tu
-        JOIN TranslationUnitVariants tuv ON tu.ID = tuv.TranslationUnit_ID
+        JOIN translation_unit_fragments tuv ON tu.ID = tuv.TranslationUnit_ID
     """)
     
     results = cursor.fetchall()
