@@ -17,12 +17,15 @@ from utils import converters, excel_to_tmx
 st.set_page_config(page_title="Glossary Format Converter", layout="wide")
 
 # ------------- SIDEBAR (DEVELOPER INFO + INSTRUCTIONS) ------------------
-with st.sidebar:
-    st.markdown("##  Developer Information")
-    st.markdown("**Ahmed Mostafa Saad**")
-    st.markdown("*Position:* Localization Engineering & TMS Support Team Lead")
-    st.markdown("*Contact:* [ahmed.mostafaa@future-group.com](mailto:ahmed.mostafaa@future-group.com)")
-    st.markdown("*Company:* Future Group Translation Services")
+ith st.sidebar:
+    st.header("Developer Information")
+    st.subheader("Ahmed Mostafa Saad")
+    st.write("""
+    - **Position**: Localization Engineering & TMS Support Team Lead  
+    - **Contact**: [ahmed.mostafaa@future-group.com](mailto:ahmed.mostafaa@future-group.com)  
+    - **Company**: Future Group Translation Services
+    """)
+    st.divider()
 
     st.markdown("---")
     st.markdown("## 🛠 Tool Instructions")
