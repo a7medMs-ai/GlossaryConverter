@@ -1,5 +1,5 @@
 import os
-from java_bridge.java_wrapper import run_jar
+from glossaryconverter.java_bridge.java_wrapper import run_jar
 
 def convert_sdltb_to_tbx(sdltb_path, output_path=None):
     """
