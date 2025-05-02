@@ -1,6 +1,6 @@
 import os
-from parsers.sdltm_parser import extract_sdltm_data
-from parsers.tmx_writer import write_tmx
+from glossaryconverter.parsers.sdltm_parser import extract_sdltm_data
+from glossaryconverter.parsers.tmx_writer import write_tmx
 
 def convert_sdltm_to_tmx(input_file, output_file=None):
     if not os.path.exists(input_file):
