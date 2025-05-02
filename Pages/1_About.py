@@ -18,7 +18,7 @@ to easily convert glossary files between multiple formats including TMX, TBX, Ex
 
 ---
 
-### 👤 Developer
+###  Developer
 - **Ahmed Mostafa Saad**
 - Localization Engineering & TMS Support Team Lead  
 - Future Group Translation Services  
