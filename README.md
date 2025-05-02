@@ -1,26 +1,14 @@
-# 📘 Glossary Format Converter
+# GlossaryConverter
 
-A free and open-source Streamlit-based tool for converting glossary and translation memory files between different formats.
+A powerful tool for converting glossary and translation memory files between multiple formats:
 
-## 🚀 Features
+- TMX ⇄ SDLTM ⇄ Excel
+- TBX ⇄ CSV
+- SDLTB ⇨ TBX / CSV
 
-- Convert between:
-  - TMX ↔ Excel
-  - TBX ↔ Excel
-  - SDLTM → Excel
-  - SDLTB ↔ Excel
-- Output files are downloadable directly — no file storage, no GitHub integration.
-- Easy-to-use interface built with Streamlit.
+Built with **Python** and **Streamlit**, with selective use of **Java (Jackcess)** for SDLTB parsing.
 
-## 🧩 Supported Formats
+---
 
-| Source Format | Target Format |
-|---------------|----------------|
-| `.tmx`        | `.xlsx`        |
-| `.tbx`        | `.xlsx`, vice versa |
-| `.sdltm`      | `.xlsx`        |
-| `.sdltb`      | `.xlsx`, vice versa |
-| `.xlsx`       | `.tmx`, `.tbx`, `.sdltb` |
-
-## 🛠 Requirements
+## 📂 Project Structure
 
