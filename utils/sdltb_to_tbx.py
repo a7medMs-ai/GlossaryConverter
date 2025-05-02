@@ -1,10 +1,9 @@
 import os
-import subprocess
+from GlossaryConverter.java_bridge.java_wrapper import run_jar
 
-def convert_sdltb_to_tbx(sdltb_path, output_path=None, jar_path="java_bridge/libs/sdltb_converter.jar"):
+def convert_sdltb_to_tbx(sdltb_path, output_path=None):
     """
-    Converts an SDLTB (.mdb) file to TBX using a Java JAR tool.
-    This assumes a Java converter exists and is packaged as a .jar in the project.
+    Converts SDLTB (.mdb) file to TBX using a Java JAR wrapped by run_jar().
     """
     if not os.path.exists(sdltb_path):
         raise FileNotFoundError("SDLTB file not found.")
@@ -12,20 +11,6 @@ def convert_sdltb_to_tbx(sdltb_path, output_path=None, jar_path="java_bridge/lib
     if output_path is None:
         output_path = os.path.splitext(sdltb_path)[0] + ".tbx"
 
-    # Construct Java command
-    cmd = [
-        "java",
-        "-jar", jar_path,
-        sdltb_path,
-        output_path
-    ]
-
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        print("[INFO] Java conversion output:")
-        print(result.stdout)
-        return output_path
-    except subprocess.CalledProcessError as e:
-        print("[ERROR] Java conversion failed:")
-        print(e.stderr)
-        raise RuntimeError("Failed to convert SDLTB to TBX.")
+    output = run_jar("sdltb_converter.jar", [sdltb_path, output_path])
+    print("[JAVA OUTPUT]:", output)
+    return output_path
