@@ -18,7 +18,7 @@ st.set_page_config(page_title="Glossary Format Converter", layout="wide")
 
 # ------------- SIDEBAR (DEVELOPER INFO + INSTRUCTIONS) ------------------
 with st.sidebar:
-    st.markdown("## 🧑‍💻 Developer Information")
+    st.markdown("##  Developer Information")
     st.markdown("**Ahmed Mostafa Saad**")
     st.markdown("*Position:* Localization Engineering & TMS Support Team Lead")
     st.markdown("*Contact:* [ahmed.mostafaa@future-group.com](mailto:ahmed.mostafaa@future-group.com)")
