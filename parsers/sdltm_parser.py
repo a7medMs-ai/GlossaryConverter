@@ -1,31 +1,24 @@
-# File: parsers/sdltm_parser.py
-
 import sqlite3
-import pandas as pd
 
-def parse_sdltm_to_dataframe(file_path):
-    """
-    Extracts bilingual segments from SDLTM file using translation_unit_fragments table.
-    Returns a DataFrame with source and target segments.
-    """
-    conn = sqlite3.connect(file_path)
+def extract_sdltm_data(sdltm_path):
+    conn = sqlite3.connect(sdltm_path)
     cursor = conn.cursor()
 
-    # Load data from fragments table
-    query = """
-    SELECT
-        f.translation_unit_id,
-        f.fragment,
-        f.culture
-    FROM
-        translation_unit_fragments f
-    """
+    # جلب وحدات الترجمة
+    cursor.execute("""
+        SELECT tu.ID, tuv.LanguageCode, tuv.PlainTextSegment
+        FROM TranslationUnits tu
+        JOIN TranslationUnitVariants tuv ON tu.ID = tuv.TranslationUnit_ID
+    """)
+    
+    results = cursor.fetchall()
 
-    df = pd.read_sql_query(query, conn)
+    # تنظيم البيانات في شكل (tu_id: {lang: text})
+    tu_dict = {}
+    for tu_id, lang, text in results:
+        if tu_id not in tu_dict:
+            tu_dict[tu_id] = {}
+        tu_dict[tu_id][lang] = text
+
     conn.close()
-
-    # Pivot data so each row is one translation unit, with columns for each language
-    pivot_df = df.pivot(index="translation_unit_id", columns="culture", values="fragment")
-    pivot_df.reset_index(drop=True, inplace=True)
-
-    return pivot_df
+    return tu_dict
