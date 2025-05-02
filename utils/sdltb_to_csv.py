@@ -1,5 +1,5 @@
 import os
-from GlossaryConverter.parsers.sdltb_reader import extract_tables_from_sdltb
+from parsers.sdltb_reader import extract_tables_from_sdltb
 
 def convert_sdltb_to_csv(sdltb_path, output_dir):
     """
