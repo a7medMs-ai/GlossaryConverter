@@ -3,7 +3,7 @@
 import sys
 import os
 
-# Ensure proper module resolution for Streamlit
+# Fix module resolution
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 import streamlit as st
@@ -31,7 +31,7 @@ st.set_page_config(page_title="Glossary Format Converter", layout="centered")
 
 st.title("🧰 Glossary Format Converter")
 
-uploaded_file = st.file_uploader("Upload a file", type=["tmx", "tbx", "xlsx", "sdltb", "sdltm"])
+uploaded_file = st.file_uploader("Upload a file", type=["tmx", "tbx", "xlsx", "csv", "sdltb", "sdltm"])
 
 conversion_option = st.selectbox("Select conversion type", [
     "TMX → Excel",
@@ -49,6 +49,7 @@ if uploaded_file and st.button("Convert"):
         input_path = temp_input.name
 
     try:
+        # Conversion logic
         if conversion_option == "TMX → Excel":
             df = tmx_parser.parse_tmx_to_dataframe(input_path)
             ext = ".xlsx"
@@ -75,9 +76,13 @@ if uploaded_file and st.button("Convert"):
             export_func = converters.convert_excel_to_tbx
 
         elif conversion_option == "Excel → SDLTB":
+            # Convert Excel to CSV first
             df = excel_handler.read_excel_to_dataframe(input_path)
-            ext = ".sdltb"
-            export_func = excel_to_sdltb.convert_excel_to_sdltb
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".csv", mode="w", encoding="utf-8") as temp_csv:
+                df.to_csv(temp_csv.name, index=False)
+                # Now pass CSV to pyglossary converter
+                ext = ".sdltb"
+                export_func = lambda _df, out_path: excel_to_sdltb.convert_excel_to_sdltb(df, out_path)
 
         elif conversion_option == "Excel → TMX":
             df = excel_handler.read_excel_to_dataframe(input_path)
