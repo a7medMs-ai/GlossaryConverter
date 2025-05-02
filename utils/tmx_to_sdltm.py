@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from GlossaryConverter.parsers.tmx_reader import parse_tmx
+from parsers.tmx_reader import parse_tmx
 
 def create_sdltm_schema(cursor):
     """
