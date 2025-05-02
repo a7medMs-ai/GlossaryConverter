@@ -3,29 +3,44 @@
 import sys
 import os
 
-# Fix module resolution for Streamlit and relative imports
+# Fix path for module resolution
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 import streamlit as st
 import tempfile
 import pandas as pd
 
-# Import parsers
-from parsers import tmx_parser, tbx_parser, sdltm_parser
-from parsers import excel_handler  # ✅ Explicit and separate import for clarity
-
-# Import converters
+from parsers import tmx_parser, tbx_parser, sdltm_parser, excel_handler
 from utils import converters, excel_to_tmx
 
-# Streamlit page setup
-st.set_page_config(page_title="Glossary Format Converter", layout="centered")
+# ------------- PAGE CONFIGURATION ------------------
+st.set_page_config(page_title="Glossary Format Converter", layout="wide")
 
-st.title("🧰 Glossary Format Converter")
+# ------------- SIDEBAR (DEVELOPER INFO + INSTRUCTIONS) ------------------
+with st.sidebar:
+    st.markdown("## 🧑‍💻 Developer Information")
+    st.markdown("**Ahmed Mostafa Saad**")
+    st.markdown("*Position:* Localization Engineering & TMS Support Team Lead")
+    st.markdown("*Contact:* [ahmed.mostafaa@future-group.com](mailto:ahmed.mostafaa@future-group.com)")
+    st.markdown("*Company:* Future Group Translation Services")
 
-# Upload input file
-uploaded_file = st.file_uploader("Upload a file", type=["tmx", "tbx", "xlsx", "csv", "sdltm"])
+    st.markdown("---")
+    st.markdown("## 🛠 Tool Instructions")
+    st.markdown("""
+    1. Upload glossary file (TMX, TBX, Excel, SDLTM, CSV)
+    2. Select the desired conversion type
+    3. Download the converted file
+    """)
 
-# Select conversion type
+# ------------- MAIN PAGE ------------------
+st.markdown("<h1 style='text-align: center;'>🧰 Glossary Format Converter</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-size:16px;'>Translation Engineering Tool – 2025 • v1.0.0</p>", unsafe_allow_html=True)
+st.markdown("---")
+
+# File upload
+uploaded_file = st.file_uploader("Upload a glossary file", type=["tmx", "tbx", "xlsx", "csv", "sdltm"])
+
+# Conversion selection
 conversion_option = st.selectbox("Select conversion type", [
     "TMX → Excel",
     "TBX → Excel",
@@ -34,14 +49,13 @@ conversion_option = st.selectbox("Select conversion type", [
     "Excel → TMX"
 ])
 
-# When user clicks Convert
+# Conversion process
 if uploaded_file and st.button("Convert"):
     with tempfile.NamedTemporaryFile(delete=False) as temp_input:
         temp_input.write(uploaded_file.read())
         input_path = temp_input.name
 
     try:
-        # Handle selected conversion
         if conversion_option == "TMX → Excel":
             df = tmx_parser.parse_tmx_to_dataframe(input_path)
             ext = ".xlsx"
@@ -71,12 +85,15 @@ if uploaded_file and st.button("Convert"):
             st.error("Unsupported conversion type.")
             st.stop()
 
-        # Save and offer file for download
         with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as temp_output:
             export_func(df, temp_output.name)
-            st.success("Conversion successful!")
+            st.success("✅ Conversion successful!")
             with open(temp_output.name, "rb") as f:
-                st.download_button("📥 Download Converted File", f, file_name=f"converted_glossary{ext}")
+                st.download_button("📥 Download Converted File", f, file_name=f"converted_glossary" + ext)
 
     except Exception as e:
-        st.error(f"Conversion failed: {e}")
+        st.error(f"❌ Conversion failed: {e}")
+
+# Footer
+st.markdown("---")
+st.markdown("<p style='text-align: center;'>Future Group – Localization Engineering • © 2025 • v1.0.0</p>", unsafe_allow_html=True)
