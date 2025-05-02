@@ -1,5 +1,12 @@
 import os
+import shutil
 from glossaryconverter.java_bridge.java_wrapper import run_jar
+
+def is_java_available():
+    """
+    Checks if 'java' command is available in the system.
+    """
+    return shutil.which("java") is not None
 
 def convert_sdltb_to_tbx(sdltb_path, output_path=None):
     """
@@ -8,9 +15,5 @@ def convert_sdltb_to_tbx(sdltb_path, output_path=None):
     if not os.path.exists(sdltb_path):
         raise FileNotFoundError("SDLTB file not found.")
 
-    if output_path is None:
-        output_path = os.path.splitext(sdltb_path)[0] + ".tbx"
-
-    output = run_jar("jackcess-3.0.1.jar", [sdltb_path, output_path])
-    print("[JAVA OUTPUT]:", output)
-    return output_path
+    if not is_java_available():
+        raise EnvironmentError("Java runtime not available. Please install Java or run locally.")
