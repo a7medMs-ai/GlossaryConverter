@@ -13,15 +13,14 @@ import pandas as pd
 from parsers import (
     tmx_parser,
     tbx_parser,
-    sdltm_parser
+    sdltm_parser,
+    excel_handler  # ✅ Correct import from your project
 )
 
 from utils import (
     converters,
     excel_to_tmx
 )
-
-from pyglossary import excel_handler
 
 # Configure Streamlit page
 st.set_page_config(page_title="Glossary Format Converter", layout="centered")
