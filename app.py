@@ -3,7 +3,6 @@
 import sys
 import os
 
-# Fix module resolution
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 import streamlit as st
@@ -14,7 +13,7 @@ from parsers import (
     tmx_parser,
     tbx_parser,
     sdltm_parser,
-    excel_handler  # ✅ Correct import from your project
+    excel_handler  # ✅ بعد نقل الملف إلى parsers
 )
 
 from utils import (
@@ -22,7 +21,6 @@ from utils import (
     excel_to_tmx
 )
 
-# Configure Streamlit page
 st.set_page_config(page_title="Glossary Format Converter", layout="centered")
 
 st.title("🧰 Glossary Format Converter")
