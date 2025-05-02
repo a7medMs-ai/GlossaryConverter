@@ -17,7 +17,7 @@ from utils import converters, excel_to_tmx
 st.set_page_config(page_title="Glossary Format Converter", layout="wide")
 
 # ------------- SIDEBAR (DEVELOPER INFO + INSTRUCTIONS) ------------------
-ith st.sidebar:
+with st.sidebar:
     st.header("Developer Information")
     st.subheader("Ahmed Mostafa Saad")
     st.write("""
