@@ -5,28 +5,27 @@ import pandas as pd
 
 def parse_sdltm_to_dataframe(file_path):
     """
-    Parses an SDLTM file and extracts source/target segments from available tables.
+    Extracts bilingual segments from SDLTM file using translation_unit_fragments table.
+    Returns a DataFrame with source and target segments.
     """
     conn = sqlite3.connect(file_path)
     cursor = conn.cursor()
 
-    # List available tables
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    tables = [row[0] for row in cursor.fetchall()]
-
-    if "TranslationUnitVariants" not in tables:
-        raise RuntimeError("Expected table 'TranslationUnitVariants' not found in this SDLTM file.")
-
+    # Load data from fragments table
     query = """
-    SELECT tuv.TranslationUnitId, tuv.Culture, tuv.PlainText
-    FROM TranslationUnitVariants tuv
+    SELECT
+        f.translation_unit_id,
+        f.fragment,
+        f.culture
+    FROM
+        translation_unit_fragments f
     """
 
     df = pd.read_sql_query(query, conn)
     conn.close()
 
-    # Pivot data to create bilingual rows
-    pivot = df.pivot(index="TranslationUnitId", columns="Culture", values="PlainText")
-    pivot.reset_index(drop=True, inplace=True)
+    # Pivot data so each row is one translation unit, with columns for each language
+    pivot_df = df.pivot(index="translation_unit_id", columns="culture", values="fragment")
+    pivot_df.reset_index(drop=True, inplace=True)
 
-    return pivot
+    return pivot_df
