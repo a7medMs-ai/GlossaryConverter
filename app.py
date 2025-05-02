@@ -4,31 +4,48 @@ import streamlit as st
 import os
 import tempfile
 import pandas as pd
-from parsers import tmx_parser, tbx_parser, excel_handler
-from utils import converters
 
-# Page config
+from parsers import (
+    tmx_parser,
+    tbx_parser,
+    sdltm_parser,
+    sdltb_parser,
+    excel_handler
+)
+
+from utils import (
+    converters,
+    excel_to_sdltb,
+    excel_to_tmx
+)
+
+# Configure the Streamlit page
 st.set_page_config(page_title="Glossary Format Converter", layout="centered")
 
 st.title("🧰 Glossary Format Converter")
 
-# File upload
+# Upload section
 uploaded_file = st.file_uploader("Upload a file", type=["tmx", "tbx", "xlsx", "sdltb", "sdltm"])
 
-# Format options
+# Conversion options
 conversion_option = st.selectbox("Select conversion type", [
     "TMX → Excel",
     "TBX → Excel",
-    "Excel → TBX"
+    "SDLTM → Excel",
+    "SDLTB → Excel",
+    "Excel → TBX",
+    "Excel → SDLTB",
+    "Excel → TMX"
 ])
 
-# Process on button click
+# Convert on button click
 if uploaded_file and st.button("Convert"):
     with tempfile.NamedTemporaryFile(delete=False) as temp_input:
         temp_input.write(uploaded_file.read())
         input_path = temp_input.name
 
     try:
+        # Decide which conversion to execute
         if conversion_option == "TMX → Excel":
             df = tmx_parser.parse_tmx_to_dataframe(input_path)
             ext = ".xlsx"
@@ -39,20 +56,41 @@ if uploaded_file and st.button("Convert"):
             ext = ".xlsx"
             export_func = excel_handler.save_dataframe_to_excel
 
+        elif conversion_option == "SDLTM → Excel":
+            df = sdltm_parser.parse_sdltm_to_dataframe(input_path)
+            ext = ".xlsx"
+            export_func = excel_handler.save_dataframe_to_excel
+
+        elif conversion_option == "SDLTB → Excel":
+            df = sdltb_parser.parse_sdltb_to_dataframe(input_path)
+            ext = ".xlsx"
+            export_func = excel_handler.save_dataframe_to_excel
+
         elif conversion_option == "Excel → TBX":
             df = excel_handler.read_excel_to_dataframe(input_path)
             ext = ".tbx"
-            export_func = lambda df_, path_: converters.convert_excel_to_tbx(df_, path_)
+            export_func = converters.convert_excel_to_tbx
+
+        elif conversion_option == "Excel → SDLTB":
+            df = excel_handler.read_excel_to_dataframe(input_path)
+            ext = ".sdltb"
+            export_func = excel_to_sdltb.convert_excel_to_sdltb
+
+        elif conversion_option == "Excel → TMX":
+            df = excel_handler.read_excel_to_dataframe(input_path)
+            ext = ".tmx"
+            export_func = excel_to_tmx.convert_excel_to_tmx
 
         else:
             st.error("Unsupported conversion type.")
             st.stop()
 
+        # Export and offer download
         with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as temp_output:
             export_func(df, temp_output.name)
             st.success("Conversion successful!")
             with open(temp_output.name, "rb") as f:
-                st.download_button(f"📥 Download Converted File", f, file_name=f"converted_glossary{ext}")
+                st.download_button("📥 Download Converted File", f, file_name=f"converted_glossary{ext}")
 
     except Exception as e:
         st.error(f"Conversion failed: {e}")
