@@ -1,16 +1,19 @@
+import subprocess
 import os
-from GlossaryConverter.java_bridge.java_wrapper import run_jar
 
-def convert_sdltb_to_tbx(sdltb_path, output_path=None):
+def run_jar(jar_name, args):
     """
-    Converts SDLTB (.mdb) file to TBX using a Java JAR wrapped by run_jar().
+    Runs a JAR file with given arguments.
+    The JAR must be located inside java_bridge/libs/
     """
-    if not os.path.exists(sdltb_path):
-        raise FileNotFoundError("SDLTB file not found.")
+    jar_path = os.path.join(os.path.dirname(__file__), "libs", jar_name)
+    if not os.path.exists(jar_path):
+        raise FileNotFoundError(f"JAR not found: {jar_path}")
 
-    if output_path is None:
-        output_path = os.path.splitext(sdltb_path)[0] + ".tbx"
+    cmd = ["java", "-jar", jar_path] + args
+    result = subprocess.run(cmd, capture_output=True, text=True)
 
-    output = run_jar("jackcess-3.0.1.jar", [sdltb_path, output_path])
-    print("[JAVA OUTPUT]:", output)
-    return output_path
+    if result.returncode != 0:
+        raise RuntimeError(f"[JAVA ERROR] {result.stderr.strip()}")
+
+    return result.stdout.strip()
