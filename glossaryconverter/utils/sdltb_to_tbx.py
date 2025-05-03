@@ -1,6 +1,5 @@
 import os
 import shutil
-from glossaryconverter.java_bridge.java_wrapper import run_jar
 
 def is_java_available():
     """
